@@ -1,4 +1,4 @@
-package domain
+package entities
 
 type Url struct {
 	ID       int64  `gorm:"primaryKey"`

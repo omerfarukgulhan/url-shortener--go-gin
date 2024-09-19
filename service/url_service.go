@@ -2,7 +2,7 @@ package service
 
 import (
 	"url-shortener--go-gin/common/util/id"
-	"url-shortener--go-gin/domain"
+	"url-shortener--go-gin/domain/entities"
 	"url-shortener--go-gin/persistence"
 )
 
@@ -10,7 +10,7 @@ const base62Chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVW
 
 type IUrlService interface {
 	GetLongUrl(shortUrl string) (string, error)
-	CreateShortUrl(longUrl string) (domain.Url, error)
+	CreateShortUrl(longUrl string) (entities.Url, error)
 }
 
 type UrlService struct {
@@ -29,13 +29,13 @@ func (urlService *UrlService) GetLongUrl(shortUrl string) (string, error) {
 	return url.LongUrl, nil
 }
 
-func (urlService *UrlService) CreateShortUrl(longUrl string) (domain.Url, error) {
+func (urlService *UrlService) CreateShortUrl(longUrl string) (entities.Url, error) {
 	uniqueId, err := id.GetUniqueId()
 	if err != nil {
-		return domain.Url{}, err
+		return entities.Url{}, err
 	}
 
-	url := domain.Url{
+	url := entities.Url{
 		ID:       uniqueId,
 		ShortUrl: generateShortUrl(uniqueId),
 		LongUrl:  longUrl,

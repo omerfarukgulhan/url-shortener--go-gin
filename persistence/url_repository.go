@@ -2,15 +2,15 @@ package persistence
 
 import (
 	"gorm.io/gorm"
-	"url-shortener--go-gin/domain"
+	"url-shortener--go-gin/domain/entities"
 )
 
 type IUrlRepository interface {
-	GetAllUrls() ([]domain.Url, error)
-	GetUrlById(urlId int64) (domain.Url, error)
-	GetUrlByShort(shortUrl string) (domain.Url, error)
-	AddUrl(url domain.Url) (domain.Url, error)
-	UpdateUrl(urlId int64, url domain.Url) (domain.Url, error)
+	GetAllUrls() ([]entities.Url, error)
+	GetUrlById(urlId int64) (entities.Url, error)
+	GetUrlByShort(shortUrl string) (entities.Url, error)
+	AddUrl(url entities.Url) (entities.Url, error)
+	UpdateUrl(urlId int64, url entities.Url) (entities.Url, error)
 	DeleteUrl(urlId int64) error
 }
 
@@ -22,8 +22,8 @@ func NewUrlRepository(db *gorm.DB) IUrlRepository {
 	return &UrlRepository{DB: db}
 }
 
-func (urlRepository *UrlRepository) GetAllUrls() ([]domain.Url, error) {
-	var urls []domain.Url
+func (urlRepository *UrlRepository) GetAllUrls() ([]entities.Url, error) {
+	var urls []entities.Url
 	result := urlRepository.DB.Find(&urls)
 	if result.Error != nil {
 		return nil, result.Error
@@ -32,8 +32,8 @@ func (urlRepository *UrlRepository) GetAllUrls() ([]domain.Url, error) {
 	return urls, nil
 }
 
-func (urlRepository *UrlRepository) GetUrlById(urlId int64) (domain.Url, error) {
-	var url domain.Url
+func (urlRepository *UrlRepository) GetUrlById(urlId int64) (entities.Url, error) {
+	var url entities.Url
 	result := urlRepository.DB.First(&url, urlId)
 	if result.Error != nil {
 		return url, result.Error
@@ -42,8 +42,8 @@ func (urlRepository *UrlRepository) GetUrlById(urlId int64) (domain.Url, error) 
 	return url, nil
 }
 
-func (urlRepository *UrlRepository) GetUrlByShort(shortUrl string) (domain.Url, error) {
-	var url domain.Url
+func (urlRepository *UrlRepository) GetUrlByShort(shortUrl string) (entities.Url, error) {
+	var url entities.Url
 	result := urlRepository.DB.Where("short_url = ?", shortUrl).First(&url)
 	if result.Error != nil {
 		return url, result.Error
@@ -52,7 +52,7 @@ func (urlRepository *UrlRepository) GetUrlByShort(shortUrl string) (domain.Url, 
 	return url, nil
 }
 
-func (urlRepository *UrlRepository) AddUrl(url domain.Url) (domain.Url, error) {
+func (urlRepository *UrlRepository) AddUrl(url entities.Url) (entities.Url, error) {
 	result := urlRepository.DB.Create(&url)
 	if result.Error != nil {
 		return url, result.Error
@@ -61,8 +61,8 @@ func (urlRepository *UrlRepository) AddUrl(url domain.Url) (domain.Url, error) {
 	return url, nil
 }
 
-func (urlRepository *UrlRepository) UpdateUrl(urlId int64, url domain.Url) (domain.Url, error) {
-	var existingUrl domain.Url
+func (urlRepository *UrlRepository) UpdateUrl(urlId int64, url entities.Url) (entities.Url, error) {
+	var existingUrl entities.Url
 	result := urlRepository.DB.First(&existingUrl, urlId)
 	if result.Error != nil {
 		return existingUrl, result.Error
@@ -74,7 +74,7 @@ func (urlRepository *UrlRepository) UpdateUrl(urlId int64, url domain.Url) (doma
 }
 
 func (urlRepository *UrlRepository) DeleteUrl(urlId int64) error {
-	result := urlRepository.DB.Delete(&domain.Url{}, urlId)
+	result := urlRepository.DB.Delete(&entities.Url{}, urlId)
 	if result.Error != nil {
 		return result.Error
 	}
